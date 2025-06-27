@@ -9,5 +9,10 @@ How to Run the code
 3. If you want UI :
     Hit  http://localhost:8080/index.html
 
+
+Install require:
+pip install flask yfinance transformers torch bs4 requests feedparser
+
+
    ScreenShot:
 ![image](https://github.com/user-attachments/assets/a5d0efa6-b10e-4908-b143-8fb3b9d8b4d7)
