@@ -4,20 +4,31 @@ import yfinance as yf
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+import feedparser
 
 app = Flask(__name__)
 sentiment_model = pipeline("sentiment-analysis")
 
-def get_latest_news(stock):
+# def get_latest_news(stock):
+#     try:
+#         url = f"https://www.google.com/search?q={stock}+stock+news"
+#         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"}
+#         r = requests.get(url, headers=headers)
+#         soup = BeautifulSoup(r.text, "html.parser")
+#         headlines = soup.find_all("div", class_="BNeawe vvjwJb AP7Wnd")
+#         return [h.get_text() for h in headlines[:5]]
+#     except Exception:
+#         return []
+
+
+def get_latest_news(symbol):
     try:
-        url = f"https://www.google.com/search?q={stock}+stock+news"
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"}
-        r = requests.get(url, headers=headers)
-        soup = BeautifulSoup(r.text, "html.parser")
-        headlines = soup.find_all("div", class_="BNeawe vvjwJb AP7Wnd")
-        return [h.get_text() for h in headlines[:5]]
-    except Exception:
+        feed = feedparser.parse(f"https://finance.yahoo.com/rss/headline?s={symbol}.NS")
+        return [entry.title for entry in feed.entries[:5]]
+    except Exception as e:
+        print("News fetch error:", e)
         return []
+
 
 @app.route('/predict')
 def predict():
